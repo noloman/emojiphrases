@@ -14,6 +14,7 @@ import io.ktor.routing.routing
 import me.manulorenzo.webapp.about
 import me.manulorenzo.webapp.api.phrase
 import me.manulorenzo.webapp.home
+import me.manulorenzo.webapp.phrases
 import me.manulorenzo.webapp.repository.InMemoryRepository
 
 fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
@@ -41,6 +42,7 @@ fun Application.module(testing: Boolean = false) {
     routing {
         home()
         about()
+        phrases(db)
 
         // API
         phrase(db)

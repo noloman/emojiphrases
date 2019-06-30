@@ -6,11 +6,11 @@ import java.util.concurrent.atomic.AtomicInteger
 
 class InMemoryRepository : Repository {
     private val idCounter = AtomicInteger()
-    private val phrases = mutableListOf<EmojiPhrase>()
+    private val phrases = arrayListOf<EmojiPhrase>()
 
     override suspend fun add(phrase: EmojiPhrase): EmojiPhrase {
         if (phrases.contains(phrase)) {
-            return phrases.find { it == phrase }!!
+            return phrases.find { it == phrase } ?: throw IllegalArgumentException("Something bad happened")
         }
         phrase.id = idCounter.incrementAndGet()
         phrases.add(phrase)
@@ -23,7 +23,7 @@ class InMemoryRepository : Repository {
         phrases.find { it.id.toString() == id } ?: throw IllegalArgumentException("No phrase found for id $id")
 
 
-    override suspend fun phrases(): List<EmojiPhrase> = phrases.toList()
+    override suspend fun phrases(): ArrayList<EmojiPhrase> = phrases
 
     override suspend fun remove(phrase: EmojiPhrase): Boolean {
         if (!phrases.contains(phrase)) throw IllegalArgumentException("No phrase found for id $phrase.id")
