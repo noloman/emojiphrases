@@ -1,9 +1,6 @@
 package me.manulorenzo
 
 import io.ktor.application.Application
-import io.ktor.application.call
-import io.ktor.response.respondText
-import io.ktor.routing.get
 import io.ktor.routing.routing
 import me.manulorenzo.webapp.about
 import me.manulorenzo.webapp.home
@@ -14,9 +11,6 @@ fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
 @kotlin.jvm.JvmOverloads
 fun Application.module(testing: Boolean = false) {
     routing {
-        get("/") {
-            call.respondText { "Hello world!" }
-        }
         home()
         about()
     }
