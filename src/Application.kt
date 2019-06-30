@@ -1,12 +1,14 @@
 package me.manulorenzo
 
 import com.ryanharter.ktor.moshi.moshi
+import freemarker.cache.ClassTemplateLoader
 import io.ktor.application.Application
 import io.ktor.application.call
 import io.ktor.application.install
 import io.ktor.features.ContentNegotiation
 import io.ktor.features.DefaultHeaders
 import io.ktor.features.StatusPages
+import io.ktor.freemarker.FreeMarker
 import io.ktor.http.ContentType
 import io.ktor.http.HttpStatusCode
 import io.ktor.response.respondText
@@ -35,6 +37,9 @@ fun Application.module(testing: Boolean = false) {
     }
     install(ContentNegotiation) {
         moshi()
+    }
+    install(FreeMarker) {
+        templateLoader = ClassTemplateLoader(this::class.java.classLoader, "templates")
     }
 
     val db = InMemoryRepository()
