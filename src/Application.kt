@@ -39,7 +39,7 @@ fun Application.module(testing: Boolean = false) {
         moshi()
     }
     install(FreeMarker) {
-        templateLoader = ClassTemplateLoader(this::class.java.classLoader, "templates")
+        templateLoader = ClassTemplateLoader(this::class.java, "templates")
     }
 
     val db = InMemoryRepository()
