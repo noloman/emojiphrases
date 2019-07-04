@@ -5,6 +5,8 @@ import freemarker.cache.ClassTemplateLoader
 import io.ktor.application.Application
 import io.ktor.application.call
 import io.ktor.application.install
+import io.ktor.auth.Authentication
+import io.ktor.auth.basic
 import io.ktor.features.ContentNegotiation
 import io.ktor.features.DefaultHeaders
 import io.ktor.features.StatusPages
@@ -16,6 +18,7 @@ import io.ktor.routing.routing
 import me.manulorenzo.webapp.about
 import me.manulorenzo.webapp.api.phrase
 import me.manulorenzo.webapp.home
+import me.manulorenzo.webapp.model.User
 import me.manulorenzo.webapp.phrases
 import me.manulorenzo.webapp.repository.InMemoryRepository
 
@@ -39,7 +42,15 @@ fun Application.module(testing: Boolean = false) {
         moshi()
     }
     install(FreeMarker) {
-        templateLoader = ClassTemplateLoader(this::class.java, "templates")
+        templateLoader = ClassTemplateLoader(this::class.java.classLoader, "templates")
+    }
+    install(Authentication) {
+        basic(name = "auth") {
+            realm = "Ktor server"
+            validate { credentials ->
+                if (credentials.password == "${credentials.name}123") User(credentials.name) else null
+            }
+        }
     }
 
     val db = InMemoryRepository()
