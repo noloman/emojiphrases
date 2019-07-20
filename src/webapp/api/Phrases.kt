@@ -33,9 +33,18 @@ fun Route.phrases(db: Repository) {
         }
         post(PHRASES) {
             val params = call.receiveParameters()
-            val emojiParam = params["emoji"] ?: throw IllegalArgumentException("Missing required param")
-            val phraseParam = params["phrase"] ?: throw IllegalArgumentException("Missing required param")
-            db.add(EmojiPhrase(emoji = emojiParam, phrase = phraseParam))
+            val action = params["action"] ?: throw IllegalArgumentException("Missing required param")
+            when (action) {
+                "delete" -> {
+                    val id = params["id"] ?: throw IllegalArgumentException("Missing required param")
+                    db.remove(id)
+                }
+                "add" -> {
+                    val emoji = params["emoji"] ?: throw IllegalArgumentException("Missing required param")
+                    val phrase = params["phrase"] ?: throw IllegalArgumentException("Missing required param")
+                    db.add(EmojiPhrase(emoji, phrase))
+                }
+            }
             call.respondRedirect(PHRASES)
         }
     }
