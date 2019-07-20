@@ -1,19 +1,39 @@
-<html>
-    <body>
-    <div>${displayName}</div>
-        <ul>
+<#import "bootstrap.ftl" as b>
+
+<@b.page>
+    <#if phrases?? && (phrases?size > 0)>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Emoji</th>
+                    <th>Phrase</th>
+                </tr>
+            </thead>
+            <tbody>
             <#list phrases as phrase>
-                <li>${phrase}</li>
+                <tr>
+                    <td style="vertical-align:middle"><h3>${phrase.emoji}</h3></td>
+                    <td style="vertical-align:middle"><h3>${phrase.phrase}</h3></td>
+                    <td class="col-md-1" style="text-align:center;vertical-align:middle;">
+                        <form method="post" action="/api/v1/phrases">
+                            <input type="hidden" name="id" value="${phrase.id}">
+                            <input type="hidden" name="action" value="delete">
+                            <input type="image" src="/static/delete.png" width="24" height="24" border="0 alt="Delete" />
+                        </form>
+                    </td>
+                </tr>
             </#list>
-        </ul>
-        <form method="post" action="${apiVersion}/phrases">
-        <br/>
-        Emoji: <br/>
-        <input type="text" name="emoji" />
-        <br/>
-        Phrase: <br/>
-        <input type="text" name="phrase" />
-        <br/>
+            </tbody>
+        </table>
+    </#if>
+    <div class="panel-body">
+    <form method="post" action="/api/v1/phrases">
+        <input type="hidden" name="action" value="add">
+        Emoji:<br>
+        <input type="text" name="emoji" /><br>
+        Phrase:<br>
+        <input type="text" name="phrase" /><br>
         <input type="submit" value="Submit" />
-    </body>
-</hml>
+    </form>
+    </div>
+</@b.page>
