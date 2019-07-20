@@ -4,20 +4,24 @@ import io.ktor.application.call
 import io.ktor.auth.authenticate
 import io.ktor.auth.authentication
 import io.ktor.freemarker.FreeMarkerContent
+import io.ktor.locations.Location
+import io.ktor.locations.get
+import io.ktor.locations.post
 import io.ktor.request.receiveParameters
 import io.ktor.response.respond
-import io.ktor.response.respondRedirect
 import io.ktor.routing.Route
-import io.ktor.routing.get
-import io.ktor.routing.post
 import me.manulorenzo.API_VERSION
+import me.manulorenzo.redirect
 import me.manulorenzo.webapp.model.User
 
 const val PHRASES = "$API_VERSION/phrases"
 
+@Location(PHRASES)
+class Phrases
+
 fun Route.phrases(db: Repository) {
     authenticate("auth") {
-        get(PHRASES) {
+        get<Phrases> {
             val user = call.authentication.principal as User
             val phrases: ArrayList<EmojiPhrase> = db.phrases()
             call.respond(
@@ -31,7 +35,7 @@ fun Route.phrases(db: Repository) {
                 )
             )
         }
-        post(PHRASES) {
+        post<Phrases> {
             val params = call.receiveParameters()
             val action = params["action"] ?: throw IllegalArgumentException("Missing required param")
             when (action) {
@@ -45,7 +49,7 @@ fun Route.phrases(db: Repository) {
                     db.add(EmojiPhrase(emoji, phrase))
                 }
             }
-            call.respondRedirect(PHRASES)
+            call.redirect(Phrases())
         }
     }
 }

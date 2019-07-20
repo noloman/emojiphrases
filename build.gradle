@@ -35,4 +35,5 @@ dependencies {
     implementation "com.ryanharter.ktor:ktor-moshi:$moshi_version"
     implementation "io.ktor:ktor-auth:$ktor_version"
     testCompile "io.ktor:ktor-server-tests:$ktor_version"
+    implementation "io.ktor:ktor-locations:$ktor_version"
 }
