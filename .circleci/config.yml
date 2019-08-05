@@ -6,20 +6,19 @@ version: 2
 jobs:
   build:
     docker:
-      # specify the version you desire here
       - image: circleci/openjdk:8-jdk
-
       # Specify service dependencies here if necessary
       # CircleCI maintains a library of pre-built images
       # documented at https://circleci.com/docs/2.0/circleci-images/
-      - image: circleci/postgres:9.6.5-alpine-ram
+      - image: circleci/postgres:9.6
         environment:
+          PGDATA: /dev/shm/pgdata/data
           DATABASE_URL: postgresql://postgres@localhost:5432/emojiphrases
           POSTGRES_USER: postgres
           POSTGRES_DB: emojiphrases
           POSTGRES_PASSWORD: ""
 
-    working_directory: ~/repo
+    working_directory: ~/emojiphrases
 
     environment:
       # Customize the JVM maximum heap limit
@@ -36,12 +35,13 @@ jobs:
       - run:
           name: Wait for db
           command: dockerize -wait tcp://localhost:5432 -timeout 1m
-      - run: sudo apt-get update && sudo apt-get install -y postgresql-client
-      - run: pg_ctl -D /dev/shm/pgdata/data -l logfile start
-      - run: |
-          psql \
-          -d $DATABASE_URL \
-          -c "CREATE TABLE $POSTGRES_DB;"
+      - run:
+          name: Install PostgreSQL client
+          command: sudo apt-get update && sudo apt-get install -y postgresql-client postgresql
+      - run:
+          name: Start PostgreSQL
+          command: sudo service postgresql start
+      - run: psql -d postgresql://postgres@localhost:5432/emojiphrases -c "CREATE DATABASE emojiphrases;"
 
       # Download and cache dependencies
       - restore_cache:
