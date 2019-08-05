@@ -1,7 +1,6 @@
 package me.manulorenzo.webapp.api
 
 import io.ktor.application.call
-import io.ktor.auth.authenticate
 import io.ktor.request.receive
 import io.ktor.response.respond
 import io.ktor.routing.Route
@@ -13,11 +12,9 @@ import me.manulorenzo.webapp.repository.Repository
 const val PHRASE_ENDPOINT = "$API_VERSION/phrase"
 
 fun Route.phrase(db: Repository) {
-    authenticate("auth") {
-        post(PHRASE_ENDPOINT) {
-            val request = call.receive<Request>()
-            val phrase = db.add(request.emoji, request.phrase)
-            call.respond(phrase)
-        }
+    post(PHRASE_ENDPOINT) {
+        val request = call.receive<Request>()
+        val phrase = db.add("", request.emoji, request.phrase)
+        call.respond(phrase)
     }
 }

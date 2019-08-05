@@ -12,16 +12,16 @@ import io.ktor.sessions.sessions
 import me.manulorenzo.webapp.model.EPSession
 import me.manulorenzo.webapp.repository.Repository
 
-const val ABOUT = "/about"
+const val HOME = "/"
 
 @KtorExperimentalLocationsAPI
-@Location(ABOUT)
-class About
+@Location(HOME)
+class Home
 
 @KtorExperimentalLocationsAPI
-fun Route.about(db: Repository) {
-    get<About> {
+fun Route.home(db: Repository) {
+    get<Home> {
         val user = call.sessions.get<EPSession>()?.let { epSession -> db.user(epSession.userId) }
-        call.respond(FreeMarkerContent("about.ftl", mapOf("user" to user)))
+        call.respond(FreeMarkerContent("home.ftl", mapOf("user" to user)))
     }
 }
