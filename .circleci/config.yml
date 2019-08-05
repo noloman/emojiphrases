@@ -37,7 +37,7 @@ jobs:
           name: Wait for db
           command: dockerize -wait tcp://localhost:5432 -timeout 1m
       #      - run: pg_ctl -D /dev/shm/pgdata/data -l logfile start
-      - run: apt-get install -y postgresql-client
+      - run: sudo apt-get install -y postgresql-client
       - run: |
           psql \
           -d $DATABASE_URL \
