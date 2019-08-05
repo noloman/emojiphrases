@@ -41,8 +41,9 @@ jobs:
       - run:
           name: Start PostgreSQL
           command: sudo service postgresql start
-      #      - run: psql -d postgresql://postgres@localhost:5432/emojiphrases -c "CREATE DATABASE emojiphrases;"
-
+      - run:
+          name: "Setup custom environment variables"
+          command: echo 'export JDBC_DATABASE_URL="jdbc:postgresql:emojiphrases?user=postgres"' >> $BASH_ENV
       # Download and cache dependencies
       - restore_cache:
           keys:
