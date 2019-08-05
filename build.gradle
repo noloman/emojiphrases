@@ -35,9 +35,12 @@ dependencies {
     implementation "com.ryanharter.ktor:ktor-moshi:$moshi_version"
     implementation "io.ktor:ktor-auth:$ktor_version"
     testImplementation "io.ktor:ktor-server-tests:$ktor_version"
+    testImplementation "io.ktor:ktor-server-test-host:$ktor_version"
     implementation "io.ktor:ktor-locations:$ktor_version"
     implementation "org.jetbrains.exposed:exposed:$exposed_version"
     implementation "com.h2database:h2:$h2_version"
     implementation "com.zaxxer:HikariCP:$hikaricp_version"
     implementation "org.postgresql:postgresql:$postgres_version"
+    testRuntimeOnly "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
+    testImplementation group: 'junit', name: 'junit', version: '4.12'
 }

@@ -33,8 +33,7 @@ import me.manulorenzo.webapp.repository.EmojiphrasesRepository
 fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
 
 @Suppress("unused") // Referenced in application.conf
-@kotlin.jvm.JvmOverloads
-fun Application.module(testing: Boolean = false) {
+fun Application.module() {
     install(DefaultHeaders)
     install(StatusPages) {
         exception<Throwable> { e ->
@@ -82,7 +81,7 @@ fun Application.module(testing: Boolean = false) {
 
 const val API_VERSION = "/api/v1"
 
-@UseExperimental(KtorExperimentalLocationsAPI::class)
+@KtorExperimentalLocationsAPI
 suspend fun ApplicationCall.redirect(location: Any) {
     respondRedirect(application.locations.href(location))
 }
