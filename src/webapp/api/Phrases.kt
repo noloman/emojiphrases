@@ -13,6 +13,7 @@ import io.ktor.routing.Route
 import me.manulorenzo.API_VERSION
 import me.manulorenzo.redirect
 import me.manulorenzo.webapp.model.User
+import me.manulorenzo.webapp.repository.Repository
 
 const val PHRASES = "$API_VERSION/phrases"
 
@@ -23,7 +24,7 @@ fun Route.phrases(db: Repository) {
     authenticate("auth") {
         get<Phrases> {
             val user = call.authentication.principal as User
-            val phrases: ArrayList<EmojiPhrase> = db.phrases()
+            val phrases: List<EmojiPhrase> = db.phrases()
             call.respond(
                 FreeMarkerContent(
                     "phrases.ftl",
@@ -46,7 +47,7 @@ fun Route.phrases(db: Repository) {
                 "add" -> {
                     val emoji = params["emoji"] ?: throw IllegalArgumentException("Missing required param")
                     val phrase = params["phrase"] ?: throw IllegalArgumentException("Missing required param")
-                    db.add(EmojiPhrase(emoji, phrase))
+                    db.add(emoji, phrase)
                 }
             }
             call.redirect(Phrases())

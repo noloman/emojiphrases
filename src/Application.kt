@@ -16,6 +16,7 @@ import io.ktor.http.ContentType
 import io.ktor.http.HttpStatusCode
 import io.ktor.http.content.resources
 import io.ktor.http.content.static
+import io.ktor.locations.KtorExperimentalLocationsAPI
 import io.ktor.locations.Locations
 import io.ktor.locations.locations
 import io.ktor.response.respondRedirect
@@ -26,14 +27,14 @@ import me.manulorenzo.webapp.api.phrase
 import me.manulorenzo.webapp.home
 import me.manulorenzo.webapp.model.User
 import me.manulorenzo.webapp.phrases
-import me.manulorenzo.webapp.repository.InMemoryRepository
+import me.manulorenzo.webapp.repository.DatabaseFactory
+import me.manulorenzo.webapp.repository.EmojiphrasesRepository
 
 fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
 
 @Suppress("unused") // Referenced in application.conf
 @kotlin.jvm.JvmOverloads
 fun Application.module(testing: Boolean = false) {
-
     install(DefaultHeaders)
     install(StatusPages) {
         exception<Throwable> { e ->
@@ -62,7 +63,9 @@ fun Application.module(testing: Boolean = false) {
 
     }
 
-    val db = InMemoryRepository()
+    DatabaseFactory.init()
+
+    val db = EmojiphrasesRepository()
 
     routing {
         static("/static") {
@@ -79,6 +82,7 @@ fun Application.module(testing: Boolean = false) {
 
 const val API_VERSION = "/api/v1"
 
+@UseExperimental(KtorExperimentalLocationsAPI::class)
 suspend fun ApplicationCall.redirect(location: Any) {
     respondRedirect(application.locations.href(location))
 }
