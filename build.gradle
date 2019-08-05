@@ -50,5 +50,5 @@ dependencies {
     testRuntimeOnly "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
     testImplementation "io.ktor:ktor-server-test-host:$ktor_version"
     testImplementation "io.ktor:ktor-server-tests:$ktor_version"
-    testImplementation group: 'junit', name: 'junit', version: "$junit_version"
+    testImplementation "junit:junit:$junit_version"
 }
