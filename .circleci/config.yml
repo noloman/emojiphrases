@@ -1,0 +1,62 @@
+# Java Gradle CircleCI 2.0 configuration file
+#
+# Check https://circleci.com/docs/2.0/language-java/ for more details
+#
+version: 2
+jobs:
+  build:
+    docker:
+      - image: circleci/openjdk:8-jdk
+      # Specify service dependencies here if necessary
+      # CircleCI maintains a library of pre-built images
+      # documented at https://circleci.com/docs/2.0/circleci-images/
+      - image: circleci/postgres:9.6
+        environment:
+          PGDATA: /dev/shm/pgdata/data
+          DATABASE_URL: postgresql://postgres@localhost:5432/emojiphrases
+          POSTGRES_USER: postgres
+          POSTGRES_DB: emojiphrases
+          POSTGRES_PASSWORD: ""
+
+    working_directory: ~/emojiphrases
+
+    environment:
+      # Customize the JVM maximum heap limit
+      JVM_OPTS: -Xmx3200m
+      TERM: dumb
+
+    steps:
+      - checkout
+      - run:
+          name: install dockerize
+          command: wget https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSION/dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz && sudo tar -C /usr/local/bin -xzvf dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz && rm dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz
+          environment:
+            DOCKERIZE_VERSION: v0.6.1
+      - run:
+          name: Wait for db
+          command: dockerize -wait tcp://localhost:5432 -timeout 1m
+      - run:
+          name: Install PostgreSQL client
+          command: sudo apt-get update && sudo apt-get install -y postgresql-client postgresql
+      - run:
+          name: Start PostgreSQL
+          command: sudo service postgresql start
+      - run:
+          name: "Setup custom environment variables"
+          command: echo 'export JDBC_DATABASE_URL="jdbc:postgresql:emojiphrases?user=postgres"' >> $BASH_ENV
+      # Download and cache dependencies
+      - restore_cache:
+          keys:
+            - v1-dependencies-{{ checksum "build.gradle" }}
+            # fallback to using the latest cache if no exact match is found
+            - v1-dependencies-
+
+      - run: gradle dependencies
+
+      - save_cache:
+          paths:
+            - ~/.gradle
+          key: v1-dependencies-{{ checksum "build.gradle" }}
+
+      # run tests!
+      - run: gradle test
