@@ -14,7 +14,7 @@ jobs:
       # documented at https://circleci.com/docs/2.0/circleci-images/
       - image: circleci/postgres:9.6.5-alpine-ram
         environment:
-          DATABASE_URL: postgresql://postgres@localhost/emojiphrases
+          DATABASE_URL: postgresql://postgres@localhost:5432/emojiphrases
           POSTGRES_USER: postgres
           POSTGRES_DB: emojiphrases
           POSTGRES_PASSWORD: ""
