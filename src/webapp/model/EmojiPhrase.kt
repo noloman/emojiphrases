@@ -4,7 +4,6 @@ import org.jetbrains.exposed.dao.IntIdTable
 import org.jetbrains.exposed.sql.Column
 import java.io.Serializable
 
-
 data class EmojiPhrase(
     val id: Int,
     val emoji: String,

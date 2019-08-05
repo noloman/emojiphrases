@@ -13,7 +13,12 @@ import org.jetbrains.exposed.sql.transactions.transaction
 
 class EmojiphrasesRepository : Repository {
     override suspend fun add(emojiValue: String, phraseValue: String) {
-        transaction { EmojiPhrases.insert { it[emoji] = emojiValue } }
+        transaction {
+            EmojiPhrases.insert {
+                it[emoji] = emojiValue
+                it[phrase] = phraseValue
+            }
+        }
     }
 
     override suspend fun phrase(id: Int): EmojiPhrase? = dbQuery {
@@ -41,5 +46,9 @@ class EmojiphrasesRepository : Repository {
     }
 
     private fun toEmojiPhrase(row: ResultRow): EmojiPhrase =
-        EmojiPhrase(id = row[EmojiPhrases.id].value, emoji = row[EmojiPhrases.emoji], phrase = row[EmojiPhrases.phrase])
+        EmojiPhrase(
+            id = row[EmojiPhrases.id].value,
+            emoji = row[EmojiPhrases.emoji],
+            phrase = row[EmojiPhrases.phrase]
+        )
 }
