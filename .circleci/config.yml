@@ -42,8 +42,11 @@ jobs:
           name: Start PostgreSQL
           command: sudo service postgresql start
       - run:
-          name: "Setup custom environment variables"
+          name: Setup custom environment variables
           command: echo 'export JDBC_DATABASE_URL="jdbc:postgresql:emojiphrases?user=postgres"' >> $BASH_ENV
+      - run:
+          name: Setup custom environment variables
+          command: echo 'export SECRET_KEY="12jd82jd0fk39duw82s92ssha177a"' >> $BASH_ENV
       # Download and cache dependencies
       - restore_cache:
           keys:
