@@ -1,19 +1,24 @@
 package me.manulorenzo.webapp.repository
 
-import me.manulorenzo.webapp.EmojiPhrase
-import me.manulorenzo.webapp.EmojiPhrases
+import me.manulorenzo.webapp.model.EmojiPhrase
+import me.manulorenzo.webapp.model.EmojiPhrases
 import me.manulorenzo.webapp.model.User
 import me.manulorenzo.webapp.model.Users
 import me.manulorenzo.webapp.repository.DatabaseFactory.dbQuery
-import org.jetbrains.exposed.sql.ResultRow
-import org.jetbrains.exposed.sql.deleteAll
-import org.jetbrains.exposed.sql.deleteWhere
-import org.jetbrains.exposed.sql.insert
-import org.jetbrains.exposed.sql.select
-import org.jetbrains.exposed.sql.selectAll
+import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.transactions.transaction
 
 class EmojiphrasesRepository : Repository {
+    override suspend fun getUserById(userId: String): User? =
+        Users.select { Users.id.eq(userId) }.map {
+            User(
+                userId,
+                it[Users.email],
+                it[Users.displayName],
+                it[Users.passwordHash]
+            )
+        }.singleOrNull()
+
     override suspend fun add(userId: String, emojiValue: String, phraseValue: String) {
         transaction {
             EmojiPhrases.insert {
@@ -35,9 +40,7 @@ class EmojiphrasesRepository : Repository {
     }
 
     override suspend fun remove(id: Int): Boolean {
-        if (phrase(id) == null) {
-            throw IllegalArgumentException("No phrase found for id $id.")
-        }
+        requireNotNull(phrase(id)) { "No phrase found for id $id." }
         return dbQuery { EmojiPhrases.deleteWhere { EmojiPhrases.id eq id } } > 0
     }
 

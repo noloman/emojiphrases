@@ -4,7 +4,8 @@ import com.zaxxer.hikari.HikariConfig
 import com.zaxxer.hikari.HikariDataSource
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import me.manulorenzo.webapp.EmojiPhrases
+import me.manulorenzo.webapp.model.EmojiPhrases
+import me.manulorenzo.webapp.model.Users
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.transactions.transaction
@@ -14,6 +15,7 @@ object DatabaseFactory {
         Database.connect(hikari())
         transaction {
             SchemaUtils.create(EmojiPhrases)
+            SchemaUtils.create(Users)
         }
     }
 

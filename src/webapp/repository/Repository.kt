@@ -1,6 +1,6 @@
 package me.manulorenzo.webapp.repository
 
-import me.manulorenzo.webapp.EmojiPhrase
+import me.manulorenzo.webapp.model.EmojiPhrase
 import me.manulorenzo.webapp.model.User
 
 interface Repository {
@@ -13,5 +13,6 @@ interface Repository {
     suspend fun clear()
     suspend fun user(userId: String, hash: String? = null): User?
     suspend fun userByEmail(email: String): User?
-    suspend fun createUser(user: User): Unit
+    suspend fun createUser(user: User)
+    suspend fun getUserById(userId: String): User?
 }

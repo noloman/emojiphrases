@@ -1,4 +1,4 @@
-package me.manulorenzo.webapp
+package me.manulorenzo.webapp.model
 
 import org.jetbrains.exposed.dao.IntIdTable
 import org.jetbrains.exposed.sql.Column

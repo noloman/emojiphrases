@@ -1,4 +1,4 @@
-package me.manulorenzo.webapp
+package me.manulorenzo.webapp.api
 
 import io.ktor.application.call
 import io.ktor.freemarker.FreeMarkerContent
@@ -15,11 +15,14 @@ import me.manulorenzo.API_VERSION
 import me.manulorenzo.redirect
 import me.manulorenzo.securityCode
 import me.manulorenzo.verifyCode
+import me.manulorenzo.webapp.Signin
 import me.manulorenzo.webapp.model.EPSession
+import me.manulorenzo.webapp.model.EmojiPhrase
 import me.manulorenzo.webapp.repository.Repository
 
 const val PHRASES = "$API_VERSION/phrases"
 
+@KtorExperimentalLocationsAPI
 @Location(PHRASES)
 class Phrases
 

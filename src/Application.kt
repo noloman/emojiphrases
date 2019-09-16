@@ -6,6 +6,8 @@ import io.ktor.application.Application
 import io.ktor.application.ApplicationCall
 import io.ktor.application.call
 import io.ktor.application.install
+import io.ktor.auth.Authentication
+import io.ktor.auth.jwt.jwt
 import io.ktor.features.ContentNegotiation
 import io.ktor.features.DefaultHeaders
 import io.ktor.features.StatusPages
@@ -27,17 +29,14 @@ import io.ktor.sessions.SessionTransportTransformerMessageAuthentication
 import io.ktor.sessions.Sessions
 import io.ktor.sessions.cookie
 import io.ktor.util.KtorExperimentalAPI
-import me.manulorenzo.webapp.about
+import me.manulorenzo.webapp.*
+import me.manulorenzo.webapp.api.login
 import me.manulorenzo.webapp.api.phrase
-import me.manulorenzo.webapp.home
+import me.manulorenzo.webapp.api.phrases
 import me.manulorenzo.webapp.model.EPSession
 import me.manulorenzo.webapp.model.User
-import me.manulorenzo.webapp.phrases
 import me.manulorenzo.webapp.repository.DatabaseFactory
 import me.manulorenzo.webapp.repository.EmojiphrasesRepository
-import me.manulorenzo.webapp.signin
-import me.manulorenzo.webapp.signout
-import me.manulorenzo.webapp.signup
 import java.net.URI
 import java.util.concurrent.TimeUnit
 
@@ -75,6 +74,21 @@ fun Application.module() {
     DatabaseFactory.init()
 
     val db = EmojiphrasesRepository()
+    val jwtService = JwtService()
+
+    install(Authentication) {
+        jwt {
+            verifier(jwtService.verifier)
+            realm = "emojiphrases app"
+            validate {
+                val payload = it.payload
+                val claim = payload.getClaim("id")
+                val claimString = claim.asString()
+                val user = db.getUserById(claimString)
+                user
+            }
+        }
+    }
 
     routing {
         static("/static") {
@@ -87,6 +101,7 @@ fun Application.module() {
         signout()
         signup(db, hashFunction)
         // API
+        login(db, jwtService)
         phrase(db)
     }
 }
