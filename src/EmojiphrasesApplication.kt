@@ -25,6 +25,7 @@ import io.ktor.request.host
 import io.ktor.response.respondRedirect
 import io.ktor.response.respondText
 import io.ktor.routing.routing
+import io.ktor.server.netty.EngineMain
 import io.ktor.sessions.SessionTransportTransformerMessageAuthentication
 import io.ktor.sessions.Sessions
 import io.ktor.sessions.cookie
@@ -39,12 +40,30 @@ import me.manulorenzo.webapp.repository.EmojiphrasesRepository
 import java.net.URI
 import java.util.concurrent.TimeUnit
 
-fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
+const val API_VERSION = "/api/v1"
+
+@KtorExperimentalLocationsAPI
+suspend fun ApplicationCall.redirect(location: Any) {
+    respondRedirect(application.locations.href(location))
+}
+
+fun main(args: Array<String>): Unit = EngineMain.main(args)
+
+fun ApplicationCall.refererHost() =
+    request.header(HttpHeaders.Referrer)?.let { referrer: String -> URI.create(referrer).host }
+
+fun ApplicationCall.securityCode(date: Long, user: User, hashFunction: (String) -> String) =
+    hashFunction("$date:${user.userId}:${request.host()}:${refererHost()}")
+
+fun ApplicationCall.verifyCode(date: Long, user: User, code: String, hashFunction: (String) -> String) =
+    securityCode(date, user, hashFunction) == code &&
+            (System.currentTimeMillis() - date).let {
+                it > 0 && it < TimeUnit.MILLISECONDS.convert(2, TimeUnit.HOURS)
+            }
 
 @KtorExperimentalAPI
 @KtorExperimentalLocationsAPI
-@Suppress("unused") // Referenced in application.conf
-fun Application.module() {
+fun Application.main() {
     install(DefaultHeaders)
     install(StatusPages) {
         exception<Throwable> { e ->
@@ -104,22 +123,3 @@ fun Application.module() {
         phrasesApi(db)
     }
 }
-
-const val API_VERSION = "/api/v1"
-
-@KtorExperimentalLocationsAPI
-suspend fun ApplicationCall.redirect(location: Any) {
-    respondRedirect(application.locations.href(location))
-}
-
-fun ApplicationCall.refererHost() =
-    request.header(HttpHeaders.Referrer)?.let { referrer: String -> URI.create(referrer).host }
-
-fun ApplicationCall.securityCode(date: Long, user: User, hashFunction: (String) -> String) =
-    hashFunction("$date:${user.userId}:${request.host()}:${refererHost()}")
-
-fun ApplicationCall.verifyCode(date: Long, user: User, code: String, hashFunction: (String) -> String) =
-    securityCode(date, user, hashFunction) == code &&
-            (System.currentTimeMillis() - date).let {
-                it > 0 && it < TimeUnit.MILLISECONDS.convert(2, TimeUnit.HOURS)
-            }
