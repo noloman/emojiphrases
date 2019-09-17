@@ -17,9 +17,7 @@ class JwtService {
         .withSubject("Authentication")
         .withIssuer(issuer)
         .withClaim("id", user.userId)
-        .withExpiresAt(
-            expiresAt()
-        ).sign(algorithm)
+        .withExpiresAt(expiresAt()).sign(algorithm)
 
     private fun expiresAt() = Date(System.currentTimeMillis() + 3_600_600 * 24)
 }

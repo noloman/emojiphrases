@@ -1,6 +1,5 @@
 package me.manulorenzo
 
-import com.ryanharter.ktor.moshi.moshi
 import freemarker.cache.ClassTemplateLoader
 import io.ktor.application.Application
 import io.ktor.application.ApplicationCall
@@ -12,6 +11,7 @@ import io.ktor.features.ContentNegotiation
 import io.ktor.features.DefaultHeaders
 import io.ktor.features.StatusPages
 import io.ktor.freemarker.FreeMarker
+import io.ktor.gson.gson
 import io.ktor.http.ContentType
 import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpStatusCode
@@ -31,8 +31,7 @@ import io.ktor.sessions.cookie
 import io.ktor.util.KtorExperimentalAPI
 import me.manulorenzo.webapp.*
 import me.manulorenzo.webapp.api.login
-import me.manulorenzo.webapp.api.phrase
-import me.manulorenzo.webapp.api.phrases
+import me.manulorenzo.webapp.api.phrasesApi
 import me.manulorenzo.webapp.model.EPSession
 import me.manulorenzo.webapp.model.User
 import me.manulorenzo.webapp.repository.DatabaseFactory
@@ -57,7 +56,7 @@ fun Application.module() {
         }
     }
     install(ContentNegotiation) {
-        moshi()
+        gson()
     }
     install(FreeMarker) {
         templateLoader = ClassTemplateLoader(this::class.java.classLoader, "templates")
@@ -77,7 +76,7 @@ fun Application.module() {
     val jwtService = JwtService()
 
     install(Authentication) {
-        jwt {
+        jwt("jwt") {
             verifier(jwtService.verifier)
             realm = "emojiphrases app"
             validate {
@@ -102,7 +101,7 @@ fun Application.module() {
         signup(db, hashFunction)
         // API
         login(db, jwtService)
-        phrase(db)
+        phrasesApi(db)
     }
 }
 

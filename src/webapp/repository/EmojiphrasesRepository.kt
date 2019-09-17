@@ -9,7 +9,7 @@ import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.transactions.transaction
 
 class EmojiphrasesRepository : Repository {
-    override suspend fun getUserById(userId: String): User? =
+    override suspend fun getUserById(userId: String) = dbQuery {
         Users.select { Users.id.eq(userId) }.map {
             User(
                 userId,
@@ -18,6 +18,7 @@ class EmojiphrasesRepository : Repository {
                 it[Users.passwordHash]
             )
         }.singleOrNull()
+    }
 
     override suspend fun add(userId: String, emojiValue: String, phraseValue: String) {
         transaction {
