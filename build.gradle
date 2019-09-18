@@ -23,9 +23,9 @@ apply plugin: 'application'
 mainClassName = "io.ktor.server.netty.DevelopmentEngine"
 
 sourceSets {
-    main.kotlin.srcDirs = [ 'src' ]
-    test.kotlin.srcDirs = [ 'test' ]
-    main.resources.srcDirs = [ 'resources' ]
+    main.kotlin.srcDirs = ['src']
+    test.kotlin.srcDirs = ['test']
+    main.resources.srcDirs = ['resources']
 }
 
 repositories {
@@ -51,3 +51,5 @@ dependencies {
     testImplementation "io.ktor:ktor-server-tests:$ktor_version"
     testImplementation "junit:junit:$junit_version"
 }
+task stage(dependsOn: ['build', 'clean'])
+build.mustRunAfter clean
