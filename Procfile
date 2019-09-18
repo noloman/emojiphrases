@@ -1,1 +1,1 @@
-web: ./build/install/phrasesemoji/bin/phrasesemoji
+web: ./build/scripts/emojiphrases
