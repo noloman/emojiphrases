@@ -6,6 +6,7 @@ import io.ktor.application.ApplicationCall
 import io.ktor.application.call
 import io.ktor.application.install
 import io.ktor.auth.Authentication
+import io.ktor.auth.authentication
 import io.ktor.auth.jwt.jwt
 import io.ktor.features.ContentNegotiation
 import io.ktor.features.DefaultHeaders
@@ -60,6 +61,8 @@ fun ApplicationCall.verifyCode(date: Long, user: User, code: String, hashFunctio
             (System.currentTimeMillis() - date).let {
                 it > 0 && it < TimeUnit.MILLISECONDS.convert(2, TimeUnit.HOURS)
             }
+
+val ApplicationCall.apiUser get() = authentication.principal<User>()
 
 @KtorExperimentalAPI
 @KtorExperimentalLocationsAPI

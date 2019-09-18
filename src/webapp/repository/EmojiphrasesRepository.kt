@@ -6,7 +6,6 @@ import me.manulorenzo.webapp.model.User
 import me.manulorenzo.webapp.model.Users
 import me.manulorenzo.webapp.repository.DatabaseFactory.dbQuery
 import org.jetbrains.exposed.sql.*
-import org.jetbrains.exposed.sql.transactions.transaction
 
 class EmojiphrasesRepository : Repository {
     override suspend fun getUserById(userId: String) = dbQuery {
@@ -20,15 +19,20 @@ class EmojiphrasesRepository : Repository {
         }.singleOrNull()
     }
 
-    override suspend fun add(userId: String, emojiValue: String, phraseValue: String) {
-        transaction {
-            EmojiPhrases.insert {
+    override suspend fun add(userId: String, emojiValue: String, phraseValue: String) =
+        dbQuery {
+            val insertStatement = EmojiPhrases.insert {
                 it[user] = userId
                 it[emoji] = emojiValue
                 it[phrase] = phraseValue
             }
+            val result = insertStatement.resultedValues?.get(0)
+            if (result != null) {
+                toEmojiPhrase(result)
+            } else {
+                null
+            }
         }
-    }
 
     override suspend fun phrase(id: Int): EmojiPhrase? = dbQuery {
         EmojiPhrases.select { EmojiPhrases.id eq id }.mapNotNull { toEmojiPhrase(it) }.singleOrNull()
