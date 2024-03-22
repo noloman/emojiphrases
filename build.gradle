@@ -45,7 +45,7 @@ dependencies {
     implementation "org.jetbrains.exposed:exposed:$exposed_version"
     implementation "com.zaxxer:HikariCP:$hikaricp_version"
     implementation "org.postgresql:postgresql:$postgres_version"
-    implementation 'com.auth0:java-jwt:3.8.2'
+    implementation 'com.auth0:java-jwt:3.19.4'
     testRuntimeOnly "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
     testImplementation "io.ktor:ktor-server-test-host:$ktor_version"
     testImplementation "io.ktor:ktor-server-tests:$ktor_version"
