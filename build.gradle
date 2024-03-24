@@ -5,7 +5,7 @@ buildscript {
     ext.exposed_version = '0.16.1'
     ext.hikaricp_version = '3.3.1'
     ext.postgres_version = '42.2.6'
-    ext.junit_version = '4.12'
+    ext.junit_version = '4.13.2'
 
     repositories {
         mavenCentral()
