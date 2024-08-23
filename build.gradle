@@ -4,7 +4,7 @@ buildscript {
     ext.logback_version = '1.2.1'
     ext.exposed_version = '0.16.1'
     ext.hikaricp_version = '3.3.1'
-    ext.postgres_version = '42.2.6'
+    ext.postgres_version = '42.7.4'
     ext.junit_version = '4.12'
 
     repositories {
